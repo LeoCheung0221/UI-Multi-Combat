@@ -1,0 +1,2 @@
+rootProject.name='XMultiUI'
+include ':app'
