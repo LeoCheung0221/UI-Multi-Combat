@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../XMultiUI.iml" filepath="$PROJECT_DIR$/../XMultiUI.iml" group="XMultiUI" />
+      <module fileurl="file://$PROJECT_DIR$/../animationdemo/animationdemo.iml" filepath="$PROJECT_DIR$/../animationdemo/animationdemo.iml" group="XMultiUI/animationdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../animationdemo1/animationdemo1.iml" filepath="$PROJECT_DIR$/../animationdemo1/animationdemo1.iml" group="XMultiUI/animationdemo1" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" group="XMultiUI/app" />
+      <module fileurl="file://$PROJECT_DIR$/../baseutils/baseutils.iml" filepath="$PROJECT_DIR$/../baseutils/baseutils.iml" group="XMultiUI/baseutils" />
+      <module fileurl="file://$PROJECT_DIR$/../flowlayoutdemo/flowlayoutdemo.iml" filepath="$PROJECT_DIR$/../flowlayoutdemo/flowlayoutdemo.iml" group="XMultiUI/flowlayoutdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../matrixdemo/matrixdemo.iml" filepath="$PROJECT_DIR$/../matrixdemo/matrixdemo.iml" group="XMultiUI/matrixdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../myactionbar/myactionbar.iml" filepath="$PROJECT_DIR$/../myactionbar/myactionbar.iml" group="XMultiUI/myactionbar" />
+      <module fileurl="file://$PROJECT_DIR$/../mydrawviewdemo/mydrawviewdemo.iml" filepath="$PROJECT_DIR$/../mydrawviewdemo/mydrawviewdemo.iml" group="XMultiUI/mydrawviewdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../myscrollerdemo/myscrollerdemo.iml" filepath="$PROJECT_DIR$/../myscrollerdemo/myscrollerdemo.iml" group="XMultiUI/myscrollerdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../myviewgroupdemo1/myviewgroupdemo1.iml" filepath="$PROJECT_DIR$/../myviewgroupdemo1/myviewgroupdemo1.iml" group="XMultiUI/myviewgroupdemo1" />
+      <module fileurl="file://$PROJECT_DIR$/../scrollerdemo/scrollerdemo.iml" filepath="$PROJECT_DIR$/../scrollerdemo/scrollerdemo.iml" group="XMultiUI/scrollerdemo" />
+      <module fileurl="file://$PROJECT_DIR$/swimmingfishdemo.iml" filepath="$PROJECT_DIR$/swimmingfishdemo.iml" group="XMultiUI/swimmingfishdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../textdrawdemo/textdrawdemo.iml" filepath="$PROJECT_DIR$/../textdrawdemo/textdrawdemo.iml" group="XMultiUI/textdrawdemo" />
+      <module fileurl="file://$PROJECT_DIR$/../toutiaodemo/toutiaodemo.iml" filepath="$PROJECT_DIR$/../toutiaodemo/toutiaodemo.iml" group="XMultiUI/toutiaodemo" />
+    </modules>
+  </component>
+</project>
