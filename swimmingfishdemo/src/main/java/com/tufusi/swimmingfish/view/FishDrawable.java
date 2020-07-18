@@ -141,11 +141,12 @@ public class FishDrawable extends Drawable {
         //第四步：画鱼身下肢上半截（大半圆）
         //首先计算body下肢大圆圆心坐标
         PointF bodyBigBottomCenterPoint = calculatePoint(headPoint, BODY_LENGTH, fishAngle - 180);
-        PointF bodyMiddleBottomCenterPoint
-                = makeSegment(canvas, bodyBigBottomCenterPoint, BIG_CIRCLE_RADIUS, MIDDLE_CIRCLE_RADIUS, FIND_MIDDLE_CIRCLE_LENGTH, fishAngle, true);
+        PointF bodyMiddleBottomCenterPoint = makeSegment(canvas, bodyBigBottomCenterPoint, BIG_CIRCLE_RADIUS,
+                MIDDLE_CIRCLE_RADIUS, FIND_MIDDLE_CIRCLE_LENGTH, fishAngle, true);
 
         //第五步：画鱼身下肢下半截（小半圆）
-        makeSegment(canvas, bodyMiddleBottomCenterPoint, MIDDLE_CIRCLE_RADIUS, SMALL_CIRCLE_RADIUS, FIND_SMALL_CIRCLE_LENGTH, fishAngle, false);
+        makeSegment(canvas, bodyMiddleBottomCenterPoint, MIDDLE_CIRCLE_RADIUS,
+                SMALL_CIRCLE_RADIUS, FIND_SMALL_CIRCLE_LENGTH, fishAngle, false);
 
         //第六步：画鱼尾（双三角形重叠）三角形的边长等于尾鳍大圆的直径 || 三角形尖角方向也与鱼朝向一致
         makeTriangle(canvas, bodyMiddleBottomCenterPoint, FIND_TRIANGLE_LENGTH, BIG_CIRCLE_RADIUS, fishAngle);
