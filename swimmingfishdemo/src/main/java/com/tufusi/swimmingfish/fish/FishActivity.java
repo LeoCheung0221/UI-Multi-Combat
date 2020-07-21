@@ -19,7 +19,7 @@ public class FishActivity extends AppCompatActivity {
         //代码使用
 //        setContentView(new FishHeaderView(this));
 
-        ImageView ivFish = findViewById(R.id.iv_fish);
-        ivFish.setImageDrawable(new FishDrawable());
+//        ImageView ivFish = findViewById(R.id.iv_fish);
+//        ivFish.setImageDrawable(new FishDrawable());
     }
 }

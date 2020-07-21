@@ -1,5 +1,6 @@
 package com.tufusi.swimmingfish.view;
 
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -7,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
+import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,12 +44,12 @@ public class FishDrawable extends Drawable {
     /**
      * 鱼的初始朝向角度(默认鱼头朝向右边)
      */
-    private float fishMainAngle = 0;
+    private float fishMainAngle = 90;
 
     /**
      * 鱼头的半径 后面几乎所有长度均基于鱼头半径来确定，做到比例协调
      */
-    private float HEAD_RADIUS = 100;
+    private float HEAD_RADIUS = 50;
 
     /**
      * 鱼身长度
@@ -96,6 +98,21 @@ public class FishDrawable extends Drawable {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~ 鱼相关属性 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    /**
+     * 当前摆动值
+     */
+    float currentValue = 0f;
+
+    /**
+     * 鱼头圆心坐标
+     */
+    private PointF headPoint;
+
+    /**
+     * 鱼摆动频率比例
+     */
+    private float frequency;
+
     public FishDrawable() {
         init();
     }
@@ -117,15 +134,32 @@ public class FishDrawable extends Drawable {
 
         //首先确定鱼的重心点坐标 把这条鱼圈在设定打这个方形区域
         middlePoint = new PointF(4.19f * HEAD_RADIUS, 4.19f * HEAD_RADIUS);
+
+        //属性动画实现鱼摆动动画
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 3600f);
+        valueAnimator.setDuration(8000);
+        valueAnimator.setRepeatMode(ValueAnimator.RESTART);
+        valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        valueAnimator.setInterpolator(new LinearInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                currentValue = (float) animation.getAnimatedValue();
+
+                invalidateSelf();
+            }
+        });
+        valueAnimator.start();
     }
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        //设置鱼的朝向角度
-        float fishAngle = fishMainAngle;
+        //设置鱼的朝向角度 同时设置鱼头的周期性摆动角度 限制左右10°摆幅
+        //此处添加1.2是多次调整后取与1.5 的360°公倍数，和上面ValueAnimator.ofFloat(0, 3600f) 达成一致性，使得鱼摆动更加自然，系数可微调，但防止卡顿，最好设置公倍数
+        float fishAngle = (float) (fishMainAngle + Math.sin(Math.toRadians(currentValue * 1.2)) * 10);
 
         //第一步：鱼头的圆心坐标
-        PointF headPoint = calculatePoint(middlePoint, BODY_LENGTH / 2, fishAngle);
+        headPoint = calculatePoint(middlePoint, BODY_LENGTH / 2, fishAngle);
         canvas.drawCircle(headPoint.x, headPoint.y, HEAD_RADIUS, mPaint);
 
         //第二步：画右鱼鳍（初始鱼头朝向是水平向右）
@@ -180,12 +214,15 @@ public class FishDrawable extends Drawable {
 
     private void makeTriangle(Canvas canvas, PointF startPoint,
                               float findCenterLength, float findEdgeLength, float fishAngle) {
+        //尾鳍上的三角摆动 要与下节肢小圆同频， 因此保持参数一致即可
+        float triangleAngle = (float) (fishAngle + Math.sin(Math.toRadians(currentValue * 1.5)) * 35);
+
         //三角形底边的中心坐标
-        PointF centerPoint = calculatePoint(startPoint, findCenterLength, fishAngle - 180);
+        PointF centerPoint = calculatePoint(startPoint, findCenterLength, triangleAngle - 180);
 
         //三角形底边两端坐标
-        PointF leftPoint = calculatePoint(centerPoint, findEdgeLength, fishAngle + 90);
-        PointF rightPoint = calculatePoint(centerPoint, findEdgeLength, fishAngle - 90);
+        PointF leftPoint = calculatePoint(centerPoint, findEdgeLength, triangleAngle + 90);
+        PointF rightPoint = calculatePoint(centerPoint, findEdgeLength, triangleAngle - 90);
 
         mPath.reset();
         mPath.moveTo(startPoint.x, startPoint.y);
@@ -209,14 +246,25 @@ public class FishDrawable extends Drawable {
      */
     private PointF makeSegment(Canvas canvas, PointF bottomCenterPoint, float bigRadius, float smallRadius,
                                float findSmallCircleLength, float fishAngle, boolean isBigCircle) {
+
+        //设置鱼尾摆动角度 如果是大圆（下节肢big）摆动角度略小  如果是小圆摆动幅度偏大，因此上节肢选取摆幅-15~15  下节肢选取-35~35
+        //而且两者摆动的的位置相差一个相位，也就是尾鳍上半部分刚滑到中间，可能下半截还处在最右，或者最左。 因此上半节肢领先一个相位选取cos
+        //但相比于鱼头摆动，尾鳍摆动的幅度要更大一点 所以此处乘以1.5
+        float segmentAngle;
+        if (isBigCircle) {
+            segmentAngle = (float) (fishAngle + Math.cos(Math.toRadians(currentValue * 1.5)) * 15);
+        } else {
+            segmentAngle = (float) (fishAngle + Math.sin(Math.toRadians(currentValue * 1.5)) * 35);
+        }
+
         //计算梯形的上底中心坐标
-        PointF upperCenterPoint = calculatePoint(bottomCenterPoint, findSmallCircleLength, fishAngle - 180);
+        PointF upperCenterPoint = calculatePoint(bottomCenterPoint, findSmallCircleLength, segmentAngle - 180);
 
         //梯形的四个点坐标
-        PointF bottomLeftPoint = calculatePoint(bottomCenterPoint, bigRadius, fishAngle + 90);
-        PointF bottomRightPoint = calculatePoint(bottomCenterPoint, bigRadius, fishAngle - 90);
-        PointF upperLeftPoint = calculatePoint(upperCenterPoint, smallRadius, fishAngle + 90);
-        PointF upperRightPoint = calculatePoint(upperCenterPoint, smallRadius, fishAngle - 90);
+        PointF bottomLeftPoint = calculatePoint(bottomCenterPoint, bigRadius, segmentAngle + 90);
+        PointF bottomRightPoint = calculatePoint(bottomCenterPoint, bigRadius, segmentAngle - 90);
+        PointF upperLeftPoint = calculatePoint(upperCenterPoint, smallRadius, segmentAngle + 90);
+        PointF upperRightPoint = calculatePoint(upperCenterPoint, smallRadius, segmentAngle - 90);
 
         if (isBigCircle) {
             //画大圆 - 只在绘制大中圆的时候才用到
@@ -270,7 +318,7 @@ public class FishDrawable extends Drawable {
      * @param angle      鱼当前的朝向角度
      * @return 返回目标点坐标
      */
-    private PointF calculatePoint(PointF startPoint, float length, float angle) {
+    public PointF calculatePoint(PointF startPoint, float length, float angle) {
         //x坐标 (此处三角余弦函数必须转成弧度计算)
         float xCoordinate = (float) (Math.cos(Math.toRadians(angle)) * length);
         //y坐标（同上）
@@ -321,5 +369,33 @@ public class FishDrawable extends Drawable {
     @Override
     public int getIntrinsicHeight() {
         return (int) (8.38f * HEAD_RADIUS);
+    }
+
+    public PointF getMiddlePoint() {
+        return middlePoint;
+    }
+
+    public PointF getHeadPoint() {
+        return headPoint;
+    }
+
+    public float getHEAD_RADIUS() {
+        return HEAD_RADIUS;
+    }
+
+    public void setFrequency(float frequency) {
+        this.frequency = frequency;
+    }
+
+    public float getFrequency() {
+        return frequency;
+    }
+
+    public float getFishMainAngle() {
+        return fishMainAngle;
+    }
+
+    public void setFishMainAngle(float fishMainAngle) {
+        this.fishMainAngle = fishMainAngle;
     }
 }
