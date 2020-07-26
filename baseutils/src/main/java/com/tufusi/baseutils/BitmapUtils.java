@@ -2084,6 +2084,7 @@ public final class BitmapUtils {
         }
     }
 
+
     private static boolean createOrExistsDir(final File file) {
         return file != null && (file.exists() ? file.isDirectory() : file.mkdirs());
     }
