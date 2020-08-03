@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AnimationDemo</string>
+    <string name="alpha_animation">渐变动画</string>
+    <string name="rotate_animation">旋转动画</string>
+    <string name="scale_animation">缩放动画</string>
+    <string name="translate_animation">平移动画</string>
+    <string name="animation_set">集合动画</string>
 </resources>
